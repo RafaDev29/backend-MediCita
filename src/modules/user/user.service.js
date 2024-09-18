@@ -19,8 +19,6 @@ const createUser = async (nombre_usuario, contrasena) => {
 const loginUser = async (nombre_usuario, contrasena) => {
   try {
     const pool = await poolPromise;
-
-    // Buscar el usuario por nombre de usuario
     const result = await pool.request()
       .input('nombre_usuario', sql.NVarChar, nombre_usuario)
       .input('contrasena', sql.NVarChar, contrasena)  // Comparar la contraseña
@@ -32,7 +30,9 @@ const loginUser = async (nombre_usuario, contrasena) => {
       throw new Error('Credenciales inválidas');
     }
 
-    // Generar el token
+    // Añadir el campo role con el valor estático "usuario"
+    user.role = 'usuario';
+
     const token = generateToken(user);
 
     return {
@@ -43,6 +43,7 @@ const loginUser = async (nombre_usuario, contrasena) => {
     throw new Error('Error en el login: ' + error.message);
   }
 };
+
 
 module.exports = {
   createUser,

@@ -2,6 +2,7 @@ const { createDischarge, listDischarges } = require('./discharges.service');
 const { createDischargeSchema } = require('./dto/discharges.dto');
 
 const createDischargeController = async (req, res) => {
+ 
   try {
     // Validate the request body using Joi
     const { error } = createDischargeSchema.validate(req.body);

@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require('express');
+const cors= require('cors')
 const app = express();
 const userRoutes = require('./src/modules/user/user.routes');
 const doctorRoutes = require('./src/modules/doctor/doctor.routes');
@@ -11,6 +12,7 @@ const visitsRoutes = require('./src/modules/visits/visits.routes')
 // Middleware para procesar JSON y para manejar respuestas
 app.use(express.json());
 app.use(responseMiddleware);
+app.use(cors());
 
 // Rutas
 app.use('/api/users', userRoutes);

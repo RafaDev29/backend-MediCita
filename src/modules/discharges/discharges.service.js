@@ -1,13 +1,26 @@
 const { poolPromise, sql } = require('../../config/db');
 
 const createDischarge = async (internmentId, dischargeDate, dischargeTime, authorizingDoctorId) => {
+ 
   try {
+    // Combina dischargeDate y dischargeTime para crear una fecha y hora en formato ISO 8601
+    const isoDischargeTime = new Date(`${dischargeDate}T${dischargeTime}:00Z`).toISOString();
+    console.log(`Fecha y hora combinadas en formato ISO 8601: ${isoDischargeTime}`);
+
+    // Extrae solo la hora en formato HH:mm:ss
+    const dischargeTimeFormatted = isoDischargeTime.split('T')[1].split('.')[0]; 
+    const [hours, minutes, seconds] = dischargeTimeFormatted.split(':');
+    const timeAsDate = new Date();
+    timeAsDate.setUTCHours(parseInt(hours), parseInt(minutes), parseInt(seconds), 0);
+
+
     const pool = await poolPromise;
+   
 
     const result = await pool.request()
       .input('internmentId', sql.Int, internmentId)
       .input('dischargeDate', sql.Date, dischargeDate)
-      .input('dischargeTime', sql.Time, dischargeTime)
+      .input('dischargeTime', sql.Time, timeAsDate) // Objeto Date que contiene solo la hora
       .input('authorizingDoctorId', sql.Int, authorizingDoctorId)
       .query(`
         INSERT INTO Altas (id_internamiento, fecha_alta, hora_alta, id_medico_autorizador)
@@ -17,11 +30,16 @@ const createDischarge = async (internmentId, dischargeDate, dischargeTime, autho
 
     return result.recordset[0];
   } catch (error) {
+    console.error('Error creando el alta: ' + error.message);
     throw new Error('Error creating discharge: ' + error.message);
   }
 };
 
+
+
+
 const listDischarges = async () => {
+  console.log("gaaaaaaaaaaa")
     try {
       const pool = await poolPromise;
       const result = await pool.request()
