@@ -39,7 +39,7 @@ const createDischarge = async (internmentId, dischargeDate, dischargeTime, autho
 
 
 const listDischarges = async () => {
-  console.log("gaaaaaaaaaaa")
+
     try {
       const pool = await poolPromise;
       const result = await pool.request()
